@@ -1,0 +1,31 @@
+#!/usr/bin/env node
+
+var commander = require("commander"),
+libretto      = require("..");
+
+commander.
+option("-y, --yes", "yes to any prompt that shows up").
+option("-v, --verbose", "verbose mode").
+option("-d, --database <host>", "database to use");
+
+
+function complete(err) {
+  if(err) console.error("Error: %s", err.stack);
+  process.exit();
+}
+
+commander.
+command("import [path]").
+description("import fixtures").
+action(function(path) {
+  libretto.import({ path: path, db: commander.database, yes: commander.yes }, complete);
+});
+
+commander.
+command("export [path]").
+description("export fixtures").
+action(function(path) {
+  libretto.export({ path: path, db: commander.database, yes: commander.yes  }, complete);
+});
+
+commander.parse(process.argv);
