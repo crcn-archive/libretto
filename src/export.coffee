@@ -80,14 +80,12 @@ mapItemRelationships = (collections) ->
   # first grab all the items
   for collection in collections
     for item in collection.items
-      item.__collection = collection.name
-      item.__refs = {}
-      all[item._id] = item
+      all[item.data._id] = item
 
   # create 
   for key of all
     item = all[key]
-    attachRefs(item, all)
+    attachRefs(item, all, collections)
 
 
 
@@ -98,7 +96,7 @@ attachRefs = (item, all) ->
   keys = []
 
 
-  traverse(item).forEach (x) ->
+  traverse(item.data).forEach (x) ->
     keys = []
 
     p = this
@@ -113,13 +111,14 @@ attachRefs = (item, all) ->
 
 
     if ref = all[x]
-      refs = ref.__refs
+      refs = ref.refs
 
-      unless r = refs[item.__collection]
-        r = refs[item.__collection] = []
+      unless r = refs[item.collection]
+        r = refs[item.collection] = []
 
       unless ~r.indexOf(key)
         r.push key
+        
 
     if x and typeof x is "object" and not /^(Array|Object)$/.test x.constructor.name
       this.update { __type: x.constructor.name, value: x }
@@ -171,12 +170,27 @@ loadCollections = (collections, next) ->
   
   data = []
 
+
   async.eachSeries collections, ((collection, next) ->
-    collection.find().toArray (err, result) ->
+    collection.find().toArray((err, result) ->
       return next(err) if err?
+
       console.log "loaded %s (%d)", collection.collectionName, result.length
-      data.push { name: collection.collectionName, items: result }
+
+      data.push({ 
+        name: collection.collectionName, 
+        items: result.map((item) ->
+          {
+            data: item
+            collection: collection.collectionName
+            refs: {}
+            method: "insert"
+          }
+        )
+      })
+
       next()
+    )
   ), (err) ->
     return next(err) if err?
     next null, data
@@ -194,6 +208,8 @@ exportCollection = (options) ->
     console.log("exporting %s", collection.name);
 
     o = outcome.e next
+
+    return next() if collection.items.length is 0
 
     stepc.async(
 
