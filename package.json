@@ -27,6 +27,7 @@
     "stepc": "0.0.3",
     "async": "~0.2.9",
     "traverse": "~0.6.3",
-    "step": "0.0.x"
+    "step": "0.0.x",
+    "type-component": "0.0.1"
   }
 }
