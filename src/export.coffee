@@ -9,6 +9,7 @@ traverse = require "traverse"
 validate = require "./validate"
 connect  = require "./connect"
 mongodb  = require("mongodb")
+_log = require "./log"
 
 
 
@@ -73,7 +74,7 @@ exportCollections = (options, collections, next) ->
 
 mapItemRelationships = (collections) ->
 
-  console.log("mapping item relationships")
+  _log("mapping item relationships")
   
   all  = {}
 
@@ -175,7 +176,7 @@ loadCollections = (collections, next) ->
     collection.find().toArray((err, result) ->
       return next(err) if err?
 
-      console.log "loaded %s (%d)", collection.collectionName, result.length
+      _log "loaded %s (%d)", collection.collectionName, result.length
 
       data.push({ 
         name: collection.collectionName, 
@@ -205,7 +206,7 @@ exportCollection = (options) ->
 
     path = options.path + "/" + collection.name + ".json"
 
-    console.log("exporting %s", collection.name);
+    _log("exporting %s", collection.name);
 
     o = outcome.e next
 

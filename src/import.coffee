@@ -10,6 +10,7 @@ traverse = require "traverse"
 validate  = require "./validate"
 connect   = require "./connect"
 ObjectID = require("mongodb").ObjectID
+_log = require "./log"
 
 
 _types = {
@@ -17,13 +18,16 @@ _types = {
   Date: Date
 }
 
+
 ###
 ###
 
 module.exports = (options, next) ->
 
   o  = outcome.e(next)
-  rl = readline.createInterface(process.stdin, process.stdout)
+
+  # yuck
+  process.env.LOG_LIBRETTO = options.verbose ? process.env.LOG_LIBRETTO
   
   stepc.async(
 
@@ -104,7 +108,7 @@ loadFixtures = (fixturePaths, next) ->
 removeExplicit = (db, items, next) ->
   rm = items.filter (item) -> item.method is "remove"
   async.eachSeries rm, ((item, next) ->
-    console.log("remove %s %s", item.collection, JSON.stringify(item.query));
+    _log("remove %s %s", item.collection, JSON.stringify(item.query));
     db.collection(item.collection).remove(item.query, next);
   ), next
 
@@ -123,7 +127,7 @@ removeReferences = (db, items, next) ->
 
       # object id might be a string, or object id instance
       search[ref.field] = item.data._id
-      console.log("remove %s:%s.%s", ref.collection, item.data._id, ref.field);
+      _log("remove %s:%s.%s", ref.collection, item.data._id, ref.field);
       db.collection(ref.collection).remove(search, next)
     ), next
   , next
@@ -142,7 +146,7 @@ insertItems = (db, items, next) ->
     return next() if /^system/.test item.collection
 
 
-    console.log("insert %s:%s", item.collection, item.data._id)
+    _log("insert %s:%s", item.collection, item.data._id)
     db.collection(item.collection).insert(item.data, (err) ->
       if err
         console.warn err
@@ -152,7 +156,7 @@ insertItems = (db, items, next) ->
 
   (fixturePath, next) ->
     collectionName = path.basename(fixturePath).split(".").shift()
-    console.log "importing %s", collectionName
+    _log "importing %s", collectionName
 
     results = require(fixturePath)
     importItems results, db, next
