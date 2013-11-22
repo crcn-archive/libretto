@@ -18,14 +18,14 @@ commander.
 command("import [path]").
 description("import fixtures").
 action(function(path) {
-  libretto.import({ path: path, db: commander.database, yes: commander.yes, verbose: true }, complete);
+  libretto.import({ path: path, db: commander.database, verbose: true }, complete);
 });
 
 commander.
 command("export [path]").
 description("export fixtures").
 action(function(path) {
-  libretto.export({ path: path, db: commander.database, yes: commander.yes, verbose: true  }, complete);
+  libretto.export({ path: path, db: commander.database, verbose: true  }, complete);
 });
 
 commander.parse(process.argv);

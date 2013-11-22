@@ -1,3 +1,3 @@
 module.exports = () ->
-  return unless /true/.test String(process.env.LOG_LIBRETTO)
+  #return unless /true/.test String(process.env.LOG_LIBRETTO)
   console.log arguments...

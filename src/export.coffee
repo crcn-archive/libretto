@@ -37,7 +37,7 @@ module.exports = (options, next) ->
 
     # connect to mongodb
     o.s(() ->   
-      connect(options, @)
+      connect({ db: options.db }, @)
     ),
 
     # get all the collection names

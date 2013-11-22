@@ -38,7 +38,7 @@ module.exports = (options, next) ->
 
     # connect to mongodb
     o.s(() ->   
-      connect(options, @)
+      connect({ db: options.db }, @)
     ),
 
     #import the collections
