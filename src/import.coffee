@@ -59,8 +59,6 @@ module.exports = (options, next) ->
         not /.DS_Store/.test(name) and /(json|js)$/.test(name)
       )
 
-      console.log collectionFiles
-
       importFixtures collectionFiles, @db, @
     ),
 
