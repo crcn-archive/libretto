@@ -1,6 +1,6 @@
 {
   "name": "libretto",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "description": "libretto ========",
   "main": "./lib/index.js",
   "scripts": {
@@ -29,6 +29,7 @@
     "traverse": "~0.6.3",
     "step": "0.0.x",
     "type-component": "0.0.1",
-    "memoizee": "~0.2.6"
+    "memoizee": "~0.2.6",
+    "glob": "~3.2.8"
   }
 }

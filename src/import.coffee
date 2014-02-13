@@ -1,8 +1,9 @@
-stepc   = require "stepc"
-outcome = require "outcome"
-async   = require "async"
-mkdirp  = require "mkdirp"
-fs      = require "fs"
+stepc    = require "stepc"
+outcome  = require "outcome"
+async    = require "async"
+mkdirp   = require "mkdirp"
+glob     = require "glob"
+fs       = require "fs"
 readline = require "readline"
 path     = require "path"
 traverse = require "traverse"
@@ -48,16 +49,17 @@ module.exports = (options, next) ->
 
     # load the collection paths
     o.s(() ->
-      fs.readdir options.path, @
+      glob options.path, @
     )
 
     #
     o.s((collectionFiles) ->
 
       collectionFiles = collectionFiles.filter((name) ->
-        not /.DS_Store/.test name
-      ).map (name) ->
-        options.path + "/" + name
+        not /.DS_Store/.test(name) and /(json|js)$/.test(name)
+      )
+
+      console.log collectionFiles
 
       importFixtures collectionFiles, @db, @
     ),
