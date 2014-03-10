@@ -149,7 +149,7 @@ insertItems = (db, items, next) ->
     _log("insert %s:%s", item.collection, item.data._id)
     db.collection(item.collection).insert(item.data, (err) ->
       if err
-        console.warn err
+        _log err
       next()
     )
   ), next
