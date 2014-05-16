@@ -9,7 +9,7 @@ libretto export /path/to/fixtures/dir --database=app-testing
 Importing:
 
 ```bash
-libretto import /path/to/fixtures/dir --database=app-testing
+libretto import "/path/to/fixtures/dir/*" --database=app-testing
 ```
 
 Using in tests:
