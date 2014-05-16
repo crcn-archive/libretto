@@ -22,7 +22,7 @@ describe("test#", function() {
 
   //load the fixtures
   before(function(next) {
-    exec("./node_modules/.bin/libretto import " + __dirname + "/fixtures/scenario1 --database=app-testing", next);
+    exec("./node_modules/.bin/libretto import " + __dirname + "/fixtures/scenario1/* --database=app-testing", next);
   });
 
   it("do some test", function(next) {
