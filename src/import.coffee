@@ -49,33 +49,47 @@ module.exports = (options, next) ->
 
     # load the collection paths
     o.s(() ->
-      glob options.path, @
+      loadData options, @
     )
 
     #
-    o.s((collectionFiles) ->
-
-      collectionFiles = collectionFiles.filter((name) ->
-        not /.DS_Store/.test(name) and /(json|js)$/.test(name)
-      )
-
-      importFixtures collectionFiles, @db, @
+    o.s((data) ->
+      importFixtures data, @db, @
     ),
 
     #
     next
   )
 
+
+loadData = (options, next) ->
+
+  if options.data
+    return next(null, options.data)
+
+
+  collectionFiles = glob.sync(options.path).filter (name) ->
+    not /.DS_Store/.test(name) and /(json|js)$/.test(name)  
+
+
+  data = []
+
+  collectionFiles.forEach (fp) ->
+    data = data.concat require fp
+
+
+  next null, data
+
 ###
 ###
 
-importFixtures = (fixturePaths, db, next) ->
+importFixtures = (data, db, next) ->
 
   o = outcome.e next
 
   stepc.async(
     (() ->
-      loadFixtures fixturePaths, @
+      loadFixtures data, @
     ),
     o.s((@items) ->
       removeReferences db, items, @
@@ -90,20 +104,14 @@ importFixtures = (fixturePaths, db, next) ->
   )
 
 
-loadFixtures = (fixturePaths, next) ->
-  
-  items = []
+loadFixtures = (items, next) ->
 
-  async.eachSeries fixturePaths, ((fixturePath, next) ->
-    items = items.concat require(fixturePath)
-    next()
-  ), outcome.e(next).s () ->
-    next null, items.map (item) ->
-      # fix the object type
-      traverse(item.data).forEach (x) ->
-        if x and x.__type
-          this.update(new _types[x.__type](x.value))
-      item
+  next null, items.map (item) ->
+    # fix the object type
+    traverse(item.data).forEach (x) ->
+      if x and x.__type
+        this.update(new _types[x.__type](x.value))
+    item
 
 removeExplicit = (db, items, next) ->
   rm = items.filter (item) -> item.method is "remove"

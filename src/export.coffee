@@ -22,11 +22,6 @@ module.exports = (options, next) ->
 
   stepc.async(
 
-    # validate fields
-    (() -> 
-      validate(options, @)
-    ),
-
     # make the directory
     o.s(() ->
       try

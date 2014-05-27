@@ -1,4 +1,4 @@
-Libretto loads fixture data into your mongodb database. 
+Libretto loads fixture data into your mongodb database.
 
 Exporting:
 
