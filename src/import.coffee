@@ -32,11 +32,6 @@ module.exports = (options, next) ->
   
   stepc.async(
 
-    # validate fields
-    (() -> 
-      validate(options, @)
-    ),
-
     # connect to mongodb
     o.s(() ->   
       connect({ db: options.db }, @)
